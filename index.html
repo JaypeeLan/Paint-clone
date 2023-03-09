@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paint Clone</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="data:image/jpeg;base64,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"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Tool Bar -->
+    <div class="top-bar">
+      <!-- Active Tool -->
+      <div class="active-tool">
+        <span id="active-tool" title="Active Tool">Brush</span>
+      </div>
+      <!-- Brush -->
+      <div class="brush tool">
+        <i class="fas fa-brush" id="brush" title="Brush"></i>
+        <input class="jscolor" id="brush-color" value="a51dab" />
+        <span class="size" id="brush-size" title="Brush Size">10</span>
+        <input
+          type="range"
+          min="1"
+          max="50"
+          value="10"
+          class="slider"
+          id="brush-slider"
+        />
+      </div>
+      <!-- Bucket -->
+      <div class="bucket tool">
+        <i class="fas fa-fill-drip" title="Background Color"></i>
+        <input class="jscolor" id="bucket-color" value="ffffff" />
+      </div>
+      <!-- Eraser -->
+      <div class="tool">
+        <i class="fas fa-eraser" id="eraser" title="Eraser"></i>
+      </div>
+      <!-- Clear Canvas -->
+      <div class="tool">
+        <i class="fas fa-undo-alt" id="clear-canvas" title="Clear"></i>
+      </div>
+      <!-- Save Local Storage -->
+      <div class="tool">
+        <i
+          class="fas fa-download"
+          id="save-storage"
+          title="Save Local Storage"
+        ></i>
+      </div>
+      <!-- Load Local Storage -->
+      <div class="tool">
+        <i
+          class="fas fa-upload"
+          id="load-storage"
+          title="Load Local Storage"
+        ></i>
+      </div>
+      <!-- Clear Local Storage -->
+      <div class="tool">
+        <i
+          class="fas fa-trash-alt"
+          id="clear-storage"
+          title="Clear Local Storage"
+        ></i>
+      </div>
+      <!-- Download Image -->
+      <div class="tool">
+        <a id="download">
+          <i class="far fa-save" title="Save Image File"></i>
+        </a>
+      </div>
+    </div>
+    <!-- mobile message -->
+    <div class="mobile-message">
+      <h2>Please use application on larger screen</h2>
+    </div>
+    <!-- Script -->
+    <script src="jscolor.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
