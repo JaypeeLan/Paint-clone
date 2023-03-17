@@ -1,43 +1,58 @@
-const BRUSH_TIME = 1500;
-const activeToolEl = document.getElementById("active-tool");
-const brushColorBtn = document.getElementById("brush-color");
-const brushIcon = document.getElementById("brush");
-const brushSize = document.getElementById("brush-size");
-const brushSlider = document.getElementById("brush-slider");
-const bucketColorBtn = document.getElementById("bucket-color");
-const eraser = document.getElementById("eraser");
-const clearCanvasBtn = document.getElementById("clear-canvas");
-const saveStorageBtn = document.getElementById("save-storage");
-const loadStorageBtn = document.getElementById("load-storage");
-const clearStorageBtn = document.getElementById("clear-storage");
-const downloadBtn = document.getElementById("download");
+const activeToolEl = document.getElementById("active-tool") as HTMLElement;
+const brushColorBtn = document.getElementById(
+  "brush-color"
+) as HTMLButtonElement;
+const brushIcon = document.getElementById("brush") as HTMLElement;
+const brushSize = document.getElementById("brush-size") as HTMLElement;
+const brushSlider = document.getElementById("brush-slider") as HTMLInputElement;
+const bucketColorBtn = document.getElementById(
+  "bucket-color"
+) as HTMLButtonElement;
+const eraser = document.getElementById("eraser") as HTMLElement;
+const clearCanvasBtn = document.getElementById(
+  "clear-canvas"
+) as HTMLButtonElement;
+const saveStorageBtn = document.getElementById(
+  "save-storage"
+) as HTMLButtonElement;
+const loadStorageBtn = document.getElementById(
+  "load-storage"
+) as HTMLButtonElement;
+const clearStorageBtn = document.getElementById(
+  "clear-storage"
+) as HTMLButtonElement;
+const downloadBtn = document.getElementById("download") as HTMLAnchorElement;
+const BRUSH_TIME: number = 1500;
 const { body } = document;
 
+// =========//
+interface SavedDrawnArrayObject {
+  [key: string]: number;
+}
 // Global Variables
 const canvas = document.createElement("canvas");
 canvas.id = "canvas";
 const context = canvas.getContext("2d");
-let currentSize = 10;
-let bucketColor = "#FFFFFF";
-let currentColor = "#A51DAB";
-let isEraser = false;
-let isMouseDown = false;
-let drawnArray = [];
+let currentSize: number | string = 10;
+let bucketColor: string = "#FFFFFF";
+let currentColor: string = "#A51DAB";
+let isEraser: boolean = false;
+let isMouseDown: boolean = false;
+let drawnArray: SavedDrawnArrayObject[] = [];
 
 // ? ========================= //
-function brushSetTimeOut(ms) {
+function brushSetTimeOut(ms: number) {
   setTimeout(switchToBrush, ms);
 }
 
 // Formatting Brush Size
 function displayBrushSize() {
-  if (brushSlider.value < 10) {
+  if (Number(brushSlider.value) < 10) {
     brushSize.textContent = `0${brushSlider.value}`;
   } else {
     brushSize.textContent = brushSlider.value;
   }
 }
-
 // Setting Brush Size
 brushSlider.addEventListener("change", () => {
   currentSize = brushSlider.value;
@@ -50,7 +65,7 @@ brushColorBtn.addEventListener("change", () => {
   currentColor = `#${brushColorBtn.value}`;
 });
 
-// Setting Background Color
+// Setting Background Color and restoring current/active canvas
 bucketColorBtn.addEventListener("change", () => {
   // No '#' in the mark up
   bucketColor = `#${bucketColorBtn.value}`;
@@ -59,6 +74,7 @@ bucketColorBtn.addEventListener("change", () => {
 });
 
 // Eraser
+// ? switch to eraser when the icon is clicked
 eraser.addEventListener("click", () => {
   isEraser = true;
   brushIcon.style.color = "white";
@@ -76,7 +92,7 @@ function switchToBrush() {
   eraser.style.color = "white";
   currentColor = `#${brushColorBtn.value}`;
   currentSize = 10;
-  brushSlider.value = 10;
+  brushSlider.value = `10`;
   displayBrushSize();
 }
 
@@ -84,8 +100,8 @@ function switchToBrush() {
 function createCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 50;
-  context.fillStyle = bucketColor;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context!.fillStyle = bucketColor;
+  context!.fillRect(0, 0, canvas.width, canvas.height);
   body.appendChild(canvas);
   switchToBrush();
 }
@@ -102,22 +118,24 @@ clearCanvasBtn.addEventListener("click", () => {
 // Draw what is stored in DrawnArray
 function restoreCanvas() {
   for (let i = 1; i < drawnArray.length; i++) {
-    context.beginPath();
-    context.moveTo(drawnArray[i - 1].x, drawnArray[i - 1].y);
-    context.lineWidth = drawnArray[i].size;
-    context.lineCap = "round";
-    if (drawnArray[i].eraser) {
-      context.strokeStyle = bucketColor;
-    } else {
-      context.strokeStyle = drawnArray[i].color;
+    if (context !== null) {
+      context.beginPath();
+      context.moveTo(drawnArray[i - 1].x, drawnArray[i - 1].y);
+      context.lineWidth = drawnArray[i].size;
+      context.lineCap = "round";
+      if (drawnArray[i].eraser) {
+        context.strokeStyle = bucketColor;
+      } else {
+        context.strokeStyle = `drawnArray[i].color`;
+      }
+      context.lineTo(drawnArray[i].x, drawnArray[i].y);
+      context.stroke();
     }
-    context.lineTo(drawnArray[i].x, drawnArray[i].y);
-    context.stroke();
   }
 }
 
 // Store Drawn Lines in DrawnArray
-function storeDrawn(x, y, size, color, erase) {
+function storeDrawn(x: any, y: any, size: any, color: any, erase: any) {
   const line = {
     x,
     y,
@@ -130,7 +148,7 @@ function storeDrawn(x, y, size, color, erase) {
 }
 
 // Get Mouse Position
-function getMousePosition(event) {
+function getMousePosition(event: any) {
   const boundaries = canvas.getBoundingClientRect();
   return {
     x: event.clientX - boundaries.left,
@@ -139,33 +157,35 @@ function getMousePosition(event) {
 }
 
 // Mouse Down
-canvas.addEventListener("mousedown", (event) => {
+canvas.addEventListener("mousedown", (event: any) => {
   isMouseDown = true;
   const currentPosition = getMousePosition(event);
-
-  context.moveTo(currentPosition.x, currentPosition.y);
-  context.beginPath();
-  context.lineWidth = currentSize;
-  context.lineCap = "round";
-  context.strokeStyle = currentColor;
+  if (context !== null) {
+    context.moveTo(currentPosition.x, currentPosition.y);
+    context.beginPath();
+    context.lineWidth = Number(currentSize);
+    context.lineCap = "round";
+    context.strokeStyle = currentColor;
+  }
 });
 
 // Mouse Move
 canvas.addEventListener("mousemove", (event) => {
   if (isMouseDown) {
     const currentPosition = getMousePosition(event);
-
-    context.lineTo(currentPosition.x, currentPosition.y);
-    context.stroke();
-    storeDrawn(
-      currentPosition.x,
-      currentPosition.y,
-      currentSize,
-      currentColor,
-      isEraser
-    );
-  } else {
-    storeDrawn(undefined);
+    if (context !== null) {
+      context.lineTo(currentPosition.x, currentPosition.y);
+      context.stroke();
+      storeDrawn(
+        currentPosition.x,
+        currentPosition.y,
+        Number(currentSize),
+        Number(currentColor),
+        isEraser
+      );
+    } else {
+      storeDrawn(undefined, undefined, undefined, undefined, undefined);
+    }
   }
 });
 
@@ -185,7 +205,7 @@ saveStorageBtn.addEventListener("click", () => {
 // Load from Local Storage
 loadStorageBtn.addEventListener("click", () => {
   if (localStorage.getItem("savedCanvas")) {
-    drawnArray = JSON.parse(localStorage.getItem("savedCanvas"));
+    drawnArray = JSON.parse(localStorage.getItem("savedCanvas") || "");
     restoreCanvas();
     // Active Tool
     activeToolEl.textContent = "Canvas Loaded";
